@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy99 returned.</title>
+    <style>
+        /* Classic Windows 95 teal background */
+        body {
+            background-color: #008080; 
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Scaled window container (600px width) */
+        .window {
+            width: 600px;
+            background-color: #c0c0c0;
+            border: 3px solid;
+            border-color: #ffffff #0a0a0a #0a0a0a #ffffff;
+            box-shadow: 4px 4px 20px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        /* Window title bar */
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-text {
+            margin-right: 10px;
+        }
+
+        /* Large close button */
+        .close-btn {
+            background-color: #c0c0c0;
+            border: 1px solid;
+            border-color: #ffffff #0a0a0a #0a0a0a #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            width: 22px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        /* Window inner content */
+        .window-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Scaled headline message */
+        .message {
+            font-size: 24px;
+            color: #000;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* High-resolution fireworks canvas display */
+        #canvas {
+            background-color: #000000;
+            border: 3px inset #ffffff;
+            width: 100%;
+            height: 350px;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        /* Footer layout for the action button */
+        .window-footer {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Sizable retro action button */
+        .action-btn {
+            background-color: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #0a0a0a #0a0a0a #ffffff;
+            padding: 8px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .action-btn:active {
+            border-color: #0a0a0a #ffffff #ffffff #0a0a0a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Happy99 Window Simulation -->
+    <div class="window">
+        <div class="title-bar">
+            <span class="title-text">Happy99</span>
+            <button class="close-btn" onclick="alert('Is it really a happy new year?')">X</button>
+        </div>
+        <div class="window-body">
+            <div class="message">Happy New Year 1999 !!</div>
+            <canvas id="canvas"></canvas>
+            <div class="window-footer">
+                <button class="action-btn" onclick="triggerMassiveExplosion()">Ska</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fireworks Engine and Animation Logic -->
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set high internal rendering resolution
+        canvas.width = 554;
+        canvas.height = 344;
+
+        let particles = [];
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                // Randomized explosion velocities tailored for the upscale grid
+                this.vx = (Math.random() - 0.5) * 8;
+                this.vy = (Math.random() - 0.5) * 8;
+                this.alpha = 1;
+                this.gravity = 0.06;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                // Render pixelated square-like 4x4 particles for the vintage aesthetic
+                ctx.fillRect(this.x, this.y, 4, 4); 
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity; 
+                this.alpha -= 0.012; // Gradual fade effect
+            }
+        }
+
+        function createExplosion(x, y) {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Generate dense burst of particles to properly fill the viewport
+            for (let i = 0; i < 60; i++) {
+                particles.push(new Particle(x, y, randomColor));
+            }
+        }
+
+        function triggerMassiveExplosion() {
+            createExplosion(canvas.width / 2, canvas.height / 2);
+        }
+
+        // Main animation engine loop
+        function loop() {
+            // Apply semi-transparent overlay to produce retro motion trails
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Spontaneous passive background explosions
+            if (Math.random() < 0.035) {
+                createExplosion(Math.random() * canvas.width, Math.random() * canvas.height);
+            }
+
+            // Filter expired sparks and render the rest
+            particles = particles.filter(p => p.alpha > 0);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(loop);
+        }
+
+        // Initialize simulation execution
+        loop();
+    </script>
+</body>
+</html>
